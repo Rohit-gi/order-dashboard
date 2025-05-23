@@ -898,5 +898,60 @@
       }
     ],
     "history": []
+  },
+  {
+    "orderNumber": "",
+    "customer": "",
+    "transactionDate": "",
+    "status": "Pending",
+    "fromLocation": "",
+    "toLocation": "",
+    "pendingApprovalReasonCode": [],
+    "supportRep": "",
+    "incoterm": "",
+    "freightTerms": "",
+    "totalShipUnitCount": 0,
+    "totalQuantity": 0,
+    "discountRate": 0,
+    "billingAddress": {
+      "street": "",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "shippingAddress": {
+      "street": "",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "earlyPickupDate": "",
+    "latePickupDate": "",
+    "lines": [
+      {
+        "item": "",
+        "units": "",
+        "quantity": 1,
+        "price": 0,
+        "amount": 0
+      },
+      {
+        "item": "",
+        "units": "",
+        "quantity": 1,
+        "price": 0,
+        "amount": 0
+      },
+      {
+        "item": "",
+        "units": "",
+        "quantity": 1,
+        "price": 0,
+        "amount": 0
+      }
+    ],
+    "history": []
   }
 ]

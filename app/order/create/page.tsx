@@ -14,11 +14,17 @@ export default function CreateOrderPage() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box
+    sx={{
+    bgcolor: 'background.paper',
+    boxShadow: 'none',
+    borderRadius: 2,
+    p: 3,
+  }}>
       <Typography variant="h5" gutterBottom>
         Create Order
       </Typography>
-      <Paper elevation={2} sx={{ p: 3 }}>
+      <Paper elevation={0} sx={{ p: 3 }}>
         <OrderForm onSubmit={handleSubmit} />
       </Paper>
     </Box>

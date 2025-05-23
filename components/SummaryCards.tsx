@@ -63,8 +63,10 @@ const SummaryCards = ({ summary }: Props) => {
       {cardItems.map(({ label, value, icon, link, linkText }) => (
         <Grid item xs={12} sm={6} md={3} key={label}>
           <Card
+            elevation={0} 
             sx={{
-              backgroundColor: '#1e2437',
+              boxShadow: '2',
+              borderRadius: 2,
               color: '#fff',
               height: 160,
               display: 'flex',

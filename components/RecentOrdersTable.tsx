@@ -18,7 +18,7 @@ type Props = {
 
 export default function RecentOrdersTable({ orders }: Props) {
   return (
-    <Box sx={{ bgcolor: 'background.paper', p: 4, pb:6, borderRadius: 2, mt: 4 }}>
+    <Box sx={{ bgcolor: 'background.paper', boxShadow: '2', p: 4, pb:6, borderRadius: 2, mt: 4 }}>
       <Typography variant="h6" fontWeight={500} mb={2}>
         Recent Orders
       </Typography>

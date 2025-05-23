@@ -37,7 +37,7 @@ export default function UserMenu() {
         aria-label="Open user menu"
         sx={{ p:1, ml: 2 }}
       >
-        <Avatar alt="User Avatar" src="/avatar.png">RP</Avatar>
+        <Avatar alt="Rohit" src="/avatar-img.png" />
       </IconButton>
 
       <Popover
@@ -47,6 +47,7 @@ export default function UserMenu() {
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
+        disableScrollLock 
         disableRestoreFocus
         slotProps={{
           paper: {
@@ -62,7 +63,7 @@ export default function UserMenu() {
         }}
       >
         <Box display="flex" flexDirection="column" alignItems="center">
-          <Avatar src="/avatar.png" sx={{ width: 64, height: 64, mb: 1 }} />
+          <Avatar alt="Rohit" src="/avatar-img.png" sx={{ width: 64, height: 64, mb: 1 }} />
           <Typography variant="subtitle1" fontWeight={600}>
             Rohit Prakash
           </Typography>

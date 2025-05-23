@@ -176,7 +176,7 @@ export default function OrderListPage() {
         </Grid>
       </Grid>
 
-      <Paper elevation={2} sx={{ p: 2, mb: 2 }}>
+      <Paper elevation={0} sx={{ p: 2, mb: 2 }}>
         <Typography variant="subtitle2">Summary</Typography>
         <Box display="flex" flexWrap="wrap" gap={2} mt={1}>
           <Chip label={`Total: ${summary.total}`} />

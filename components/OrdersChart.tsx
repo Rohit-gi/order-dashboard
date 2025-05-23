@@ -22,6 +22,7 @@ export default function OrdersChart({ data }: Props) {
       sx={{
         bgcolor: 'background.paper',
         p: 3,
+        boxShadow: '2',
         borderRadius: 2,
         maxWidth: '100%',
       }}
@@ -29,7 +30,8 @@ export default function OrdersChart({ data }: Props) {
       <Typography
         variant="h6"
         fontWeight={500}
-        mb={2}
+        mt={1}
+        mb={1}
         textAlign="center"
       >
         Orders Over the Last 30 Days

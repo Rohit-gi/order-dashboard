@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { fetchOrders } from "@/lib/orders";
 import { Order } from "@/types/order";
-import { format, subDays } from 'date-fns'
+import { format, subDays } from "date-fns";
 import SummaryCards from "@/components/SummaryCards";
 import OrdersChart from "@/components/OrdersChart";
 import RecentOrdersTable from "@/components/RecentOrdersTable";
@@ -41,13 +41,15 @@ export default function HomePage() {
     Cancelled: orders?.filter((o) => o.status === "Cancelled").length ?? 0,
   };
 
-const chartData = orders
-  ? Array.from({ length: 30 }).map((_, i) => {
-      const date = format(subDays(new Date(), 29 - i), 'yyyy-MM-dd');
-      const count = orders.filter(order => order.transactionDate === date).length;
-      return { date, count };
-    })
-  : [];
+  const chartData = orders
+    ? Array.from({ length: 30 }).map((_, i) => {
+        const date = format(subDays(new Date(), 29 - i), "yyyy-MM-dd");
+        const count = orders.filter(
+          (order) => order.transactionDate === date
+        ).length;
+        return { date, count };
+      })
+    : [];
 
   return (
     <Box sx={{ p: 3 }}>
@@ -64,14 +66,16 @@ const chartData = orders
           <Grid container spacing={2} mt={3}>
             <Grid item xs={12} md={4}>
               <Card
+                elevation={0}
                 sx={{
                   textAlign: "center",
-                  p: 3,
+                  boxShadow: 2,
+                  p: 4,
                   height: "100%",
                   borderRadius: 2,
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
                 }}
               >
                 <Typography variant="h6" color="#fff" mb={2}>
@@ -84,7 +88,7 @@ const chartData = orders
                     display: "inline-flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    mb: 2,
+                    mb: 1.5,
                   }}
                 >
                   <CircularProgress
@@ -112,11 +116,11 @@ const chartData = orders
                   </Box>
                 </Box>
 
-                <Typography variant="body2" color="text.secondary" mt={2}>
+                <Typography variant="body2" color="text.secondary" mb={0.5}>
                   Total sales made today
                 </Typography>
 
-                <Typography variant="h4" fontWeight={600} gutterBottom>
+                <Typography variant="h4" fontWeight={600} mb={1}>
                   ${totalRevenue.toFixed(0)}
                 </Typography>
 
@@ -125,7 +129,6 @@ const chartData = orders
                   included.
                 </Typography>
 
-                {/* Revenue Comparisons */}
                 <Grid container spacing={2} justifyContent="center">
                   {[
                     {
