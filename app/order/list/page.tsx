@@ -1,8 +1,7 @@
-// app/order/list/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { Order, ReasonCode } from "@/types/order";
@@ -10,7 +9,6 @@ import { fetchOrders } from "@/lib/orders";
 import { getOrderColumns } from "@/components/getOrderColumns";
 import OrderFilters from "@/components/OrderFilters";
 import OrderSummary from "@/components/OrderSummary";
-import ClearIcon from "@mui/icons-material/Clear";
 
 export default function OrderListPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -22,8 +20,6 @@ export default function OrderListPage() {
   const [reasonCodes, setReasonCodes] = useState<ReasonCode[]>([]);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
-  const [pageSize, setPageSize] = useState<number>(10);
-
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
@@ -40,35 +36,35 @@ export default function OrderListPage() {
     load();
   }, []);
 
-  const handleView = (id: string) => {
-    router.push(`/order/${id}`);
-  };
+  const handleView = (id: string) => router.push(`/order/${id}`);
+  const handleDelete = (id: string) =>
+    setOrders((prev) => prev.filter((o) => o.orderNumber !== id));
 
-  const handleDelete = (id: string) => {
-    setOrders((prev) => prev.filter((order) => order.orderNumber !== id));
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("All");
+    setReasonCodes([]);
+    setStartDate("");
+    setEndDate("");
   };
 
   const filteredOrders = useMemo(() => {
     return orders
-      .filter((order) => !!order.orderNumber) // ✅ ensure valid ID for DataGrid
-      .filter((order) => {
+      .filter((o) => !!o.orderNumber)
+      .filter((o) => {
         const matchesStatus =
-          statusFilter === "All" || order.status === statusFilter;
-
+          statusFilter === "All" || o.status === statusFilter;
         const matchesSearch =
-          order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase());
-
-        const orderDate = order.transactionDate?.split("T")[0] || "";
+          o.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          o.orderNumber.toLowerCase().includes(searchQuery.toLowerCase());
+        const orderDate = o.transactionDate?.split("T")[0] || "";
         const inStartRange = !startDate || orderDate >= startDate;
         const inEndRange = !endDate || orderDate <= endDate;
-
         const matchesReason =
           reasonCodes.length === 0 ||
-          order.pendingApprovalReasonCode?.some((code) =>
+          o.pendingApprovalReasonCode?.some((code) =>
             reasonCodes.includes(code)
           );
-
         return (
           matchesStatus &&
           matchesSearch &&
@@ -81,27 +77,19 @@ export default function OrderListPage() {
 
   const pagedOrders = useMemo(() => {
     const start = paginationModel.page * paginationModel.pageSize;
-    const end = start + paginationModel.pageSize;
-    return filteredOrders.slice(start, end);
+    return filteredOrders.slice(start, start + paginationModel.pageSize);
   }, [filteredOrders, paginationModel]);
 
-  const summary = useMemo(() => {
-    return {
+  const summary = useMemo(
+    () => ({
       total: filteredOrders.length,
       Pending: filteredOrders.filter((o) => o.status === "Pending").length,
       Approved: filteredOrders.filter((o) => o.status === "Approved").length,
       Shipped: filteredOrders.filter((o) => o.status === "Shipped").length,
       Cancelled: filteredOrders.filter((o) => o.status === "Cancelled").length,
-    };
-  }, [filteredOrders]);
-
-  const handleClearFilters = () => {
-    setSearchQuery("");
-    setStatusFilter("All");
-    setReasonCodes([]);
-    setStartDate("");
-    setEndDate("");
-  };
+    }),
+    [filteredOrders]
+  );
 
   return (
     <Box
@@ -122,22 +110,35 @@ export default function OrderListPage() {
         setEndDate={setEndDate}
         reasonCodes={reasonCodes}
         setReasonCodes={setReasonCodes}
+        onClearFilters={handleClearFilters}
       />
 
       <OrderSummary summary={summary} />
 
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={handleClearFilters}
-        sx={{ mb: 2, alignSelf: "flex-start" }}
+      <Box
+        sx={{
+          flexGrow: 1,
+          minHeight: 0,
+          height: 600, width: '100%',
+          p: 2,
+          borderRadius: 2,
+          bgcolor: "background.paper",
+        }}
       >
-        <ClearIcon sx={{ mr: 1 }} />
-        Clear Filters
-      </Button>
-
-      <Box sx={{ flexGrow: 1, minHeight: 0 }}>
         <DataGrid<Order>
+          sx={{
+            '--DataGrid-containerBackground': 'background.paper',
+            bgcolor: "background.paper", 
+            "& .MuiDataGrid-toolbarContainer": {
+              bgcolor: "background.paper", 
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              bgcolor: "background.paper", 
+            },
+            "& .MuiDataGrid-footerContainer": {
+              bgcolor: "background.paper", 
+            },
+          }}
           rows={pagedOrders}
           pagination
           paginationMode="client"
@@ -148,9 +149,7 @@ export default function OrderListPage() {
           loading={loading}
           disableRowSelectionOnClick
           density="comfortable"
-          autoHeight
           pageSizeOptions={[5, 10, 20]}
-          slots={{ toolbar: GridToolbar }}
         />
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import { Box, Chip, Paper, Typography } from '@mui/material';
+import { Box, Chip, Paper, Typography } from "@mui/material";
 
 interface SummaryProps {
   summary: {
@@ -13,8 +13,10 @@ interface SummaryProps {
 export default function OrderSummary({ summary }: SummaryProps) {
   return (
     <Paper elevation={0} sx={{ p: 2, mb: 2 }}>
-      <Typography variant="subtitle2">Summary</Typography>
-      <Box display="flex" flexWrap="wrap" gap={2} mt={1}>
+      <Box display="flex" alignItems="center" flexWrap="wrap" gap={2}>
+        <Typography variant="subtitle2" sx={{ minWidth: 100 }}>
+          Order Summary
+        </Typography>
         <Chip label={`Total: ${summary.total}`} />
         <Chip color="warning" label={`Pending: ${summary.Pending}`} />
         <Chip color="success" label={`Approved: ${summary.Approved}`} />

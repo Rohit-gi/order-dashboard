@@ -30,26 +30,37 @@ export const getOrderColumns = (
     field: "orderNumber",
     headerName: "Order #",
     flex: 1,
+    align: "center",
+    headerAlign: "center",
   },
   {
     field: "customer",
     headerName: "Customer",
     flex: 1,
+    align: "center",
+    headerAlign: "center",
   },
   {
     field: "transactionDate",
     headerName: "Created Date",
     flex: 1,
+    align: "center",
+    headerAlign: "center",
   },
   {
     field: "dueDate",
     headerName: "Due Date",
     flex: 1,
+    align: "center",
+    headerAlign: "center",
   },
   {
     field: "amount",
     headerName: "Amount ($)",
     flex: 1,
+    align: "center",
+    headerAlign: "center",
+
     type: "number",
     renderCell: (params: GridRenderCellParams<Order, number>) => {
       const value = params.value ?? 0;
@@ -61,6 +72,9 @@ export const getOrderColumns = (
     field: "status",
     headerName: "Status",
     flex: 1,
+    align: "center",
+    headerAlign: "center",
+
     type: "singleSelect",
     valueOptions: ["Pending", "Approved", "Shipped", "Cancelled"],
     renderCell: (params: GridRenderCellParams<Order, string>) => (
@@ -75,6 +89,9 @@ export const getOrderColumns = (
     field: "actions",
     headerName: "",
     flex: 0.5,
+    align: "center",
+    headerAlign: "center",
+
     sortable: false,
     renderCell: (params: GridRenderCellParams<Order>) => (
       <OrderActionsCell
