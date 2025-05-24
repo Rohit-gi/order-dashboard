@@ -53,7 +53,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
     >
       <IconButton
         onClick={handleToggle}
-        sx={{ m: 1, alignSelf: open ? 'flex-end' : 'center' }}
+        sx={{ m: 1, mt:2, alignSelf: open ? 'flex-end' : 'center' }}
         aria-label={open ? 'Collapse menu' : 'Expand menu'}
       >
         <MenuIcon />

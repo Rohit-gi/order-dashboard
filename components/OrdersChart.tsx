@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material'
 import {
   ResponsiveContainer,
   LineChart,
@@ -17,45 +17,49 @@ type Props = {
 }
 
 export default function OrdersChart({ data }: Props) {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   return (
     <Box
       sx={{
         bgcolor: 'background.paper',
-        p: 3,
-        boxShadow: '2',
+        p: isMobile ? 2 : 3,
+        boxShadow: 2,
         borderRadius: 2,
-        maxWidth: '100%',
+        width: '100%',
+        overflowX: 'auto',
       }}
     >
       <Typography
-        variant="h6"
+        variant={isMobile ? 'subtitle1' : 'h6'}
         fontWeight={500}
         mt={1}
-        mb={1}
+        mb={2}
         textAlign="center"
       >
         Orders Over the Last 30 Days
       </Typography>
 
       <Box sx={{ width: '100%', mx: 'auto' }}>
-        <ResponsiveContainer width="95%" height={350}>
+        <ResponsiveContainer width="95%" height={isMobile ? 250 : 350}>
           <LineChart
             data={data}
-            margin={{ top: 20, right: 20, left: 0, bottom: 10 }}
+            margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
 
             <XAxis
               dataKey="date"
               tickFormatter={(date) => format(new Date(date), 'MMM d')}
-              interval={4}
-              tick={{ fontSize: 12 }}
+              interval={isMobile ? 6 : 4}
+              tick={{ fontSize: isMobile ? 10 : 12 }}
             />
 
             <YAxis
               allowDecimals={false}
               domain={[0, 'dataMax + 1']}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: isMobile ? 10 : 12 }}
             />
 
             <Tooltip
@@ -70,8 +74,8 @@ export default function OrdersChart({ data }: Props) {
               dataKey="count"
               stroke="#3b82f6"
               strokeWidth={2}
-              dot={{ r: 4 }}
-              activeDot={{ r: 6 }}
+              dot={{ r: 3 }}
+              activeDot={{ r: 5 }}
             />
           </LineChart>
         </ResponsiveContainer>
