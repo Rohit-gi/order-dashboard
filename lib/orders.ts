@@ -2,11 +2,20 @@ import orders from '@/public/data/orders.json'
 import { Order, OrderStatus, OrderSummary } from '@/types/order'
 
 // Simulate async order fetch
+
 export async function fetchOrders(): Promise<Order[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(orders as Order[]), 300)
-  })
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const enhancedOrders = (orders as Order[]).map((order) => ({
+        ...order,
+        amount: order.lines.reduce((sum, line) => sum + line.amount, 0),
+        dueDate: order.latePickupDate,
+      }));
+      resolve(enhancedOrders);
+    }, 300);
+  });
 }
+
 
 export async function createOrder(order: Order): Promise<void> {
   const res = await fetch('/api/orders', {

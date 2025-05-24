@@ -1,11 +1,4 @@
-'use client';
-
-import { useEffect, useState, useMemo } from 'react';
-import {
-  DataGrid,
-  GridColDef,
-  GridRenderCellParams,
-} from '@mui/x-data-grid';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Chip,
@@ -18,8 +11,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+} from '@mui/x-data-grid';
 import SearchIcon from '@mui/icons-material/Search';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Order, OrderLine } from '@/types/order';
 import { fetchOrders } from '@/lib/orders';
 
@@ -30,10 +28,10 @@ const statusColors: Record<Order['status'], 'warning' | 'success' | 'info' | 'er
   Cancelled: 'error',
 };
 
-export const getOrderColumns = (
+const getOrderColumns = (
   handleView: (id: string) => void,
   handleDelete: (id: string) => void
-): GridColDef[] => [
+): GridColDef<Order>[] => [
   { field: 'orderNumber', headerName: 'Order #', flex: 1 },
   { field: 'customer', headerName: 'Customer', flex: 1 },
   { field: 'transactionDate', headerName: 'Created Date', flex: 1 },
@@ -41,47 +39,39 @@ export const getOrderColumns = (
     field: 'dueDate',
     headerName: 'Due Date',
     flex: 1,
-    valueGetter: (params) => {
-      const row = params?.row as Order;
-      return row?.latePickupDate ?? '';
-    },
+    valueGetter: (params: GridRenderCellParams<Order>) => params.row.latePickupDate,
   },
   {
     field: 'amount',
     headerName: 'Amount ($)',
     flex: 1,
-    valueGetter: (params) => {
-      const row = params?.row as Order;
-      if (!row || !row.lines) return 0;
-      return row.lines.reduce((sum: number, line: OrderLine) => sum + line.amount, 0);
-    },
-    valueFormatter: (params) =>
+    valueGetter: (params: GridRenderCellParams<Order>) =>
+      params.row.lines.reduce((sum: number, line: OrderLine) => sum + line.amount, 0),
+    valueFormatter: (params: GridRenderCellParams<Order>) =>
       typeof params.value === 'number' ? `$${params.value.toFixed(2)}` : '$0.00',
   },
   {
     field: 'status',
     headerName: 'Status',
     flex: 1,
-    renderCell: (params) => (
+    type: 'singleSelect',
+    valueOptions: ['Pending', 'Approved', 'Shipped', 'Cancelled'],
+    renderCell: (params: GridRenderCellParams<Order>) => (
       <Chip
         label={params.value}
         color={statusColors[params.value as Order['status']]}
         size="small"
       />
     ),
-    sortable: true,
-    type: 'singleSelect',
-    valueOptions: ['Pending', 'Approved', 'Shipped', 'Cancelled'],
   },
   {
     field: 'actions',
     headerName: '',
-    sortable: false,
+    type: 'actions',
     flex: 0.5,
     renderCell: (params: GridRenderCellParams<Order>) => {
       const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
       const open = Boolean(anchorEl);
-      const order = params.row;
 
       const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -98,7 +88,7 @@ export const getOrderColumns = (
             <MenuItem
               onClick={() => {
                 handleClose();
-                handleView(order.orderNumber);
+                handleView(params.row.orderNumber);
               }}
             >
               View
@@ -106,7 +96,7 @@ export const getOrderColumns = (
             <MenuItem
               onClick={() => {
                 handleClose();
-                handleDelete(order.orderNumber);
+                handleDelete(params.row.orderNumber);
               }}
             >
               Delete

@@ -1,40 +1,16 @@
+// app/order/list/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  Tabs,
-  Tab,
-  Typography,
-  TextField,
-  InputAdornment,
-  MenuItem,
-  Grid,
-  Paper,
-  Chip,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import { DataGrid } from "@mui/x-data-grid";
+import { Box, Button, Typography } from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { Order, ReasonCode } from "@/types/order";
 import { fetchOrders } from "@/lib/orders";
-import { getOrderColumns } from "@/components/OrderTable";
+import { getOrderColumns } from "@/components/getOrderColumns";
+import OrderFilters from "@/components/OrderFilters";
+import OrderSummary from "@/components/OrderSummary";
 import ClearIcon from "@mui/icons-material/Clear";
-
-const statusTabs: (Order["status"] | "All")[] = [
-  "All",
-  "Pending",
-  "Approved",
-  "Shipped",
-  "Cancelled",
-];
-const reasonCodeOptions: ReasonCode[] = [
-  "PRICE_DISCREPANCY",
-  "CREDIT_HOLD",
-  "STOCK_SHORTAGE",
-  "CUSTOMER_REQUEST",
-];
 
 export default function OrderListPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -46,6 +22,12 @@ export default function OrderListPage() {
   const [reasonCodes, setReasonCodes] = useState<ReasonCode[]>([]);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+  const [pageSize, setPageSize] = useState<number>(10);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
 
   const router = useRouter();
 
@@ -67,21 +49,41 @@ export default function OrderListPage() {
   };
 
   const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      const matchesStatus =
-        statusFilter === "All" || order.status === statusFilter;
-      const matchesSearch =
-        order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase());
+    return orders
+      .filter((order) => !!order.orderNumber) // ✅ ensure valid ID for DataGrid
+      .filter((order) => {
+        const matchesStatus =
+          statusFilter === "All" || order.status === statusFilter;
 
-      const orderDate = order.transactionDate?.split("T")[0] || "";
+        const matchesSearch =
+          order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const inStartRange = !startDate || orderDate >= startDate;
-      const inEndRange = !endDate || orderDate <= endDate;
+        const orderDate = order.transactionDate?.split("T")[0] || "";
+        const inStartRange = !startDate || orderDate >= startDate;
+        const inEndRange = !endDate || orderDate <= endDate;
 
-      return matchesStatus && matchesSearch && inStartRange && inEndRange;
-    });
-  }, [orders, statusFilter, searchQuery, startDate, endDate]);
+        const matchesReason =
+          reasonCodes.length === 0 ||
+          order.pendingApprovalReasonCode?.some((code) =>
+            reasonCodes.includes(code)
+          );
+
+        return (
+          matchesStatus &&
+          matchesSearch &&
+          inStartRange &&
+          inEndRange &&
+          matchesReason
+        );
+      });
+  }, [orders, statusFilter, searchQuery, startDate, endDate, reasonCodes]);
+
+  const pagedOrders = useMemo(() => {
+    const start = paginationModel.page * paginationModel.pageSize;
+    const end = start + paginationModel.pageSize;
+    return filteredOrders.slice(start, end);
+  }, [filteredOrders, paginationModel]);
 
   const summary = useMemo(() => {
     return {
@@ -93,6 +95,14 @@ export default function OrderListPage() {
     };
   }, [filteredOrders]);
 
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("All");
+    setReasonCodes([]);
+    setStartDate("");
+    setEndDate("");
+  };
+
   return (
     <Box
       sx={{ display: "flex", flexDirection: "column", height: "100vh", p: 2 }}
@@ -101,102 +111,25 @@ export default function OrderListPage() {
         Orders
       </Typography>
 
-      <Tabs
-        value={statusFilter}
-        onChange={(_, val) => setStatusFilter(val)}
-        variant="scrollable"
-        scrollButtons="auto"
-        sx={{ mb: 2 }}
-      >
-        {statusTabs.map((s) => (
-          <Tab key={s} label={s} value={s} />
-        ))}
-      </Tabs>
+      <OrderFilters
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+        reasonCodes={reasonCodes}
+        setReasonCodes={setReasonCodes}
+      />
 
-      <Grid container spacing={2} mb={2}>
-        <Grid item xs={12} md={4}>
-          <TextField
-            fullWidth
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by customer or order number"
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Grid>
-
-        <Grid item xs={6} md={2}>
-          <TextField
-            fullWidth
-            size="small"
-            type="date"
-            label="Start Date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-
-        <Grid item xs={6} md={2}>
-          <TextField
-            fullWidth
-            size="small"
-            type="date"
-            label="End Date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <TextField
-            fullWidth
-            select
-            size="small"
-            label="Approval Reasons"
-            SelectProps={{ multiple: true }}
-            value={reasonCodes}
-            onChange={(e) =>
-              setReasonCodes(e.target.value as unknown as ReasonCode[])
-            }
-          >
-            {reasonCodeOptions.map((code) => (
-              <MenuItem key={code} value={code}>
-                {code.replace(/_/g, " ")}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
-      </Grid>
-
-      <Paper elevation={0} sx={{ p: 2, mb: 2 }}>
-        <Typography variant="subtitle2">Summary</Typography>
-        <Box display="flex" flexWrap="wrap" gap={2} mt={1}>
-          <Chip label={`Total: ${summary.total}`} />
-          <Chip color="warning" label={`Pending: ${summary.Pending}`} />
-          <Chip color="success" label={`Approved: ${summary.Approved}`} />
-          <Chip color="info" label={`Shipped: ${summary.Shipped}`} />
-          <Chip color="error" label={`Cancelled: ${summary.Cancelled}`} />
-        </Box>
-      </Paper>
+      <OrderSummary summary={summary} />
 
       <Button
         variant="outlined"
         color="secondary"
-        onClick={() => {
-          setSearchQuery("");
-          setStatusFilter("All");
-          setReasonCodes([]);
-          setStartDate(null);
-          setEndDate(null);
-        }}
+        onClick={handleClearFilters}
         sx={{ mb: 2, alignSelf: "flex-start" }}
       >
         <ClearIcon sx={{ mr: 1 }} />
@@ -204,13 +137,20 @@ export default function OrderListPage() {
       </Button>
 
       <Box sx={{ flexGrow: 1, minHeight: 0 }}>
-        <DataGrid
-          rows={filteredOrders}
+        <DataGrid<Order>
+          rows={pagedOrders}
+          pagination
+          paginationMode="client"
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
           columns={getOrderColumns(handleView, handleDelete)}
           getRowId={(row) => row.orderNumber}
           loading={loading}
           disableRowSelectionOnClick
           density="comfortable"
+          autoHeight
+          pageSizeOptions={[5, 10, 20]}
+          slots={{ toolbar: GridToolbar }}
         />
       </Box>
     </Box>
