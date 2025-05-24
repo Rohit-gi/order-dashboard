@@ -15,7 +15,7 @@ export default function HistoryPanel({ history }: Props) {
   return (
     <Paper
       elevation={0}
-      sx={{ mt: 4, p: 2, borderRadius: 2, bgcolor: "background.paper" }}
+      sx={{p: 2, borderRadius: 2, bgcolor: "background.paper" }}
     >
       <Typography variant="h6" gutterBottom>
         Order History

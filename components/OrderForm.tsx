@@ -28,12 +28,7 @@ const defaultLineItem: OrderLine = {
 };
 
 const statusOptions = ["Pending", "Approved", "Shipped", "Cancelled"];
-const fromLocations = [
-  "Warehouse A",
-  "Warehouse B",
-  "Warehouse C",
-  "Warehouse D",
-];
+const fromLocations = ["Warehouse A", "Warehouse B", "Warehouse C", "Warehouse D"];
 const incoterms = ["EXW", "FOB", "CIF", "DDP", "DAP"];
 const freightTerms = ["Prepaid", "Collect"];
 const reasonCodes: ReasonCode[] = [
@@ -87,11 +82,7 @@ export default function OrderForm({
     setOrder((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleLineChange = (
-    index: number,
-    field: keyof OrderLine,
-    value: any
-  ) => {
+  const handleLineChange = (index: number, field: keyof OrderLine, value: any) => {
     const lines = [...order.lines];
     const line = { ...lines[index], [field]: value };
     line.amount = line.quantity * line.price;
@@ -101,6 +92,7 @@ export default function OrderForm({
 
   const addLine = () =>
     setOrder((prev) => ({ ...prev, lines: [...prev.lines, defaultLineItem] }));
+
   const removeLine = (index: number) =>
     setOrder((prev) => ({
       ...prev,
@@ -119,21 +111,10 @@ export default function OrderForm({
   };
 
   return (
-    <Box
-      component="form"
-      display="flex"
-      flexDirection="column"
-      gap={3}
-      sx={{
-        bgcolor: "background.paper",
-        boxShadow: "2",
-        borderRadius: 2,
-        p: 3,
-      }}
-    >
+    <Box component="form" display="flex" flexDirection="column" gap={3} sx={{ p: 3 }}>
       <Typography variant="h6">Basic Information</Typography>
-      <Grid container spacing={2} component="div">
-        <Grid item xs={6}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
           <TextField
             fullWidth
             label="Order Number"
@@ -143,7 +124,7 @@ export default function OrderForm({
             required
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             fullWidth
             label="Customer"
@@ -153,8 +134,7 @@ export default function OrderForm({
             required
           />
         </Grid>
-
-        <Grid item xs={4}>
+        <Grid item xs={12} md={4}>
           <TextField
             fullWidth
             label="Transaction Date"
@@ -166,7 +146,7 @@ export default function OrderForm({
             required
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12} md={4}>
           <TextField
             select
             fullWidth
@@ -182,7 +162,7 @@ export default function OrderForm({
             ))}
           </TextField>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12} md={4}>
           <TextField
             select
             fullWidth
@@ -198,8 +178,7 @@ export default function OrderForm({
             ))}
           </TextField>
         </Grid>
-
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             fullWidth
             label="To Location"
@@ -209,8 +188,7 @@ export default function OrderForm({
             required
           />
         </Grid>
-
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             fullWidth
             label="Support Rep"
@@ -219,8 +197,7 @@ export default function OrderForm({
             disabled={readOnly}
           />
         </Grid>
-
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             select
             fullWidth
@@ -236,8 +213,7 @@ export default function OrderForm({
             ))}
           </TextField>
         </Grid>
-
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             select
             fullWidth
@@ -275,7 +251,7 @@ export default function OrderForm({
       <Typography variant="h6">Order Lines</Typography>
       {order.lines.map((line, index) => (
         <Grid container spacing={2} key={index}>
-          <Grid item xs={3}>
+          <Grid item xs={12} md={3}>
             <TextField
               fullWidth
               label="Item"
@@ -284,7 +260,7 @@ export default function OrderForm({
               disabled={readOnly}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={2}>
             <TextField
               fullWidth
               label="Units"
@@ -293,35 +269,31 @@ export default function OrderForm({
               disabled={readOnly}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={2}>
             <TextField
               type="number"
               fullWidth
               label="Quantity"
               value={line.quantity}
-              onChange={(e) =>
-                handleLineChange(index, "quantity", parseInt(e.target.value))
-              }
+              onChange={(e) => handleLineChange(index, "quantity", parseInt(e.target.value))}
               disabled={readOnly}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={2}>
             <TextField
               type="number"
               fullWidth
               label="Price"
               value={line.price}
-              onChange={(e) =>
-                handleLineChange(index, "price", parseFloat(e.target.value))
-              }
+              onChange={(e) => handleLineChange(index, "price", parseFloat(e.target.value))}
               disabled={readOnly}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={2}>
             <TextField fullWidth label="Amount" value={line.amount} disabled />
           </Grid>
           {!readOnly && (
-            <Grid item xs={1}>
+            <Grid item xs={12} md={1}>
               <Button color="error" onClick={() => removeLine(index)}>
                 Remove
               </Button>
@@ -329,12 +301,25 @@ export default function OrderForm({
           )}
         </Grid>
       ))}
-      {!readOnly && <Button onClick={addLine}>Add Line</Button>}
 
       {!readOnly && (
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit Order
-        </Button>
+        <>
+          <Button
+            variant="contained"
+            onClick={addLine}
+            sx={{
+              bgcolor: "#323949",
+              color: "white",
+              "&:hover": { bgcolor: "#212129" },
+            }}
+          >
+            Add Line
+          </Button>
+
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
+            Submit Order
+          </Button>
+        </>
       )}
     </Box>
   );

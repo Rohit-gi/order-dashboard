@@ -13,9 +13,7 @@ import OrderSummary from "@/components/OrderSummary";
 export default function OrderListPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<Order["status"] | "All">(
-    "All"
-  );
+  const [statusFilter, setStatusFilter] = useState<Order["status"] | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [reasonCodes, setReasonCodes] = useState<ReasonCode[]>([]);
   const [startDate, setStartDate] = useState<string>("");
@@ -52,8 +50,7 @@ export default function OrderListPage() {
     return orders
       .filter((o) => !!o.orderNumber)
       .filter((o) => {
-        const matchesStatus =
-          statusFilter === "All" || o.status === statusFilter;
+        const matchesStatus = statusFilter === "All" || o.status === statusFilter;
         const matchesSearch =
           o.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
           o.orderNumber.toLowerCase().includes(searchQuery.toLowerCase());
@@ -62,16 +59,8 @@ export default function OrderListPage() {
         const inEndRange = !endDate || orderDate <= endDate;
         const matchesReason =
           reasonCodes.length === 0 ||
-          o.pendingApprovalReasonCode?.some((code) =>
-            reasonCodes.includes(code)
-          );
-        return (
-          matchesStatus &&
-          matchesSearch &&
-          inStartRange &&
-          inEndRange &&
-          matchesReason
-        );
+          o.pendingApprovalReasonCode?.some((code) => reasonCodes.includes(code));
+        return matchesStatus && matchesSearch && inStartRange && inEndRange && matchesReason;
       });
   }, [orders, statusFilter, searchQuery, startDate, endDate, reasonCodes]);
 
@@ -80,20 +69,23 @@ export default function OrderListPage() {
     return filteredOrders.slice(start, start + paginationModel.pageSize);
   }, [filteredOrders, paginationModel]);
 
-  const summary = useMemo(
-    () => ({
-      total: filteredOrders.length,
-      Pending: filteredOrders.filter((o) => o.status === "Pending").length,
-      Approved: filteredOrders.filter((o) => o.status === "Approved").length,
-      Shipped: filteredOrders.filter((o) => o.status === "Shipped").length,
-      Cancelled: filteredOrders.filter((o) => o.status === "Cancelled").length,
-    }),
-    [filteredOrders]
-  );
+  const summary = useMemo(() => ({
+    total: filteredOrders.length,
+    Pending: filteredOrders.filter((o) => o.status === "Pending").length,
+    Approved: filteredOrders.filter((o) => o.status === "Approved").length,
+    Shipped: filteredOrders.filter((o) => o.status === "Shipped").length,
+    Cancelled: filteredOrders.filter((o) => o.status === "Cancelled").length,
+  }), [filteredOrders]);
 
   return (
     <Box
-      sx={{ display: "flex", flexDirection: "column", height: "100vh", p: 2 }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        px: { xs: 1, sm: 2 },
+        py: { xs: 1.5, sm: 2 },
+      }}
     >
       <Typography variant="h5" mb={2}>
         Orders
@@ -119,38 +111,42 @@ export default function OrderListPage() {
         sx={{
           flexGrow: 1,
           minHeight: 0,
-          height: 600, width: '100%',
-          p: 2,
+          height: { xs: "auto", sm: 600 },
+          width: "100%",
+          p: { xs: 1, sm: 2 },
           borderRadius: 2,
           bgcolor: "background.paper",
+          overflowX: "auto",
         }}
       >
-        <DataGrid<Order>
-          sx={{
-            '--DataGrid-containerBackground': 'background.paper',
-            bgcolor: "background.paper", 
-            "& .MuiDataGrid-toolbarContainer": {
-              bgcolor: "background.paper", 
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              bgcolor: "background.paper", 
-            },
-            "& .MuiDataGrid-footerContainer": {
-              bgcolor: "background.paper", 
-            },
-          }}
-          rows={pagedOrders}
-          pagination
-          paginationMode="client"
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-          columns={getOrderColumns(handleView, handleDelete)}
-          getRowId={(row) => row.orderNumber}
-          loading={loading}
-          disableRowSelectionOnClick
-          density="comfortable"
-          pageSizeOptions={[5, 10, 20]}
-        />
+        <Box sx={{ minWidth: 600 }}>
+          <DataGrid<Order>
+            sx={{
+              '--DataGrid-containerBackground': 'background.paper',
+              bgcolor: "background.paper",
+              "& .MuiDataGrid-toolbarContainer": {
+                bgcolor: "background.paper",
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                bgcolor: "background.paper",
+              },
+              "& .MuiDataGrid-footerContainer": {
+                bgcolor: "background.paper",
+              },
+            }}
+            rows={pagedOrders}
+            pagination
+            paginationMode="client"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            columns={getOrderColumns(handleView, handleDelete)}
+            getRowId={(row) => row.orderNumber}
+            loading={loading}
+            disableRowSelectionOnClick
+            density="comfortable"
+            pageSizeOptions={[5, 10, 20]}
+          />
+        </Box>
       </Box>
     </Box>
   );
