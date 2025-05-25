@@ -15,7 +15,6 @@ export async function POST(request: Request) {
       const fileData = await fs.readFile(filePath, 'utf-8')
       orders = JSON.parse(fileData || '[]')
     } catch (readError) {
-      // If file doesn't exist or is empty/corrupt, use empty array
       console.warn('Orders file missing or invalid. Initializing new array.')
       orders = []
     }
