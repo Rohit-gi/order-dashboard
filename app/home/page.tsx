@@ -182,7 +182,7 @@ export default function HomePage() {
           </Grid>
 
           <Box mt={4}>
-            <RecentOrdersTable orders={orders.slice(0, 5)} />
+            <RecentOrdersTable />
           </Box>
         </>
       )}

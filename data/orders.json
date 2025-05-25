@@ -857,5 +857,48 @@
         "event": "Delivered"
       }
     ]
+  },
+  {
+    "orderNumber": "ORD-0011",
+    "customer": "ABC",
+    "transactionDate": "2025-05-15",
+    "status": "Pending",
+    "fromLocation": "Warehouse A",
+    "toLocation": "Madison",
+    "pendingApprovalReasonCode": [
+      "PRICE_DISCREPANCY"
+    ],
+    "supportRep": "",
+    "incoterm": "",
+    "freightTerms": "Collect",
+    "totalShipUnitCount": 0,
+    "totalQuantity": 0,
+    "discountRate": 0,
+    "billingAddress": {
+      "street": "",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "shippingAddress": {
+      "street": "",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "earlyPickupDate": "",
+    "latePickupDate": "",
+    "lines": [
+      {
+        "item": "",
+        "units": "",
+        "quantity": 1,
+        "price": 0,
+        "amount": 0
+      }
+    ],
+    "history": []
   }
 ]
