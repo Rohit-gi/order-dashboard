@@ -16,6 +16,7 @@ type Props = {
   data: { date: string; count: number }[]
 }
 
+// Responsive line chart showing order volume over 30 days
 export default function OrdersChart({ data }: Props) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -62,6 +63,8 @@ export default function OrdersChart({ data }: Props) {
               tick={{ fontSize: isMobile ? 10 : 12 }}
             />
 
+            {/* Tooltip with custom format */}
+            
             <Tooltip
               formatter={(value: number) => [`${value} Orders`, 'Count']}
               labelFormatter={(label) =>

@@ -8,6 +8,7 @@ import { createOrder } from '@/lib/orders'
 export default function CreateOrderPage() {
   const router = useRouter()
 
+  // Function to handle form submission
   const handleSubmit = async (order: any) => {
     await createOrder(order) 
     router.push('/order/list') 

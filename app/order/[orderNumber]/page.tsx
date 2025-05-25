@@ -13,6 +13,7 @@ export default function ViewOrderPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetching order details on mount
   useEffect(() => {
     const load = async () => {
       const allOrders = await fetchOrders();
@@ -23,6 +24,7 @@ export default function ViewOrderPage() {
     load();
   }, [orderNumber]);
 
+  // Showing loading spinner while fetching
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={5}>

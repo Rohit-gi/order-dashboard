@@ -5,13 +5,7 @@ import { Chip } from "@mui/material";
 import { Order, OrderLine } from "@/types/order";
 import { OrderActionsCell } from "./OrderActionsCell";
 
-type GridValueGetterParams<T = any> = {
-  id: string | number;
-  field: string;
-  value: any;
-  row: T;
-};
-
+// Mapping each order status to a MUI Chip color
 const statusColors: Record<
   Order["status"],
   "warning" | "success" | "info" | "error"
@@ -22,6 +16,7 @@ const statusColors: Record<
   Cancelled: "error",
 };
 
+// Defining column structure for the Orders DataGrid
 export const getOrderColumns = (
   handleView: (id: string) => void,
   handleDelete: (id: string) => void
@@ -61,6 +56,7 @@ export const getOrderColumns = (
     align: "center",
     headerAlign: "center",
 
+    // Calculating the total amount from the order lines
     type: "number",
     renderCell: (params: GridRenderCellParams<Order, number>) => {
       const value = params.value ?? 0;
@@ -77,6 +73,8 @@ export const getOrderColumns = (
 
     type: "singleSelect",
     valueOptions: ["Pending", "Approved", "Shipped", "Cancelled"],
+
+    // Using a custom render function to display the status with a colored Chip
     renderCell: (params: GridRenderCellParams<Order, string>) => (
       <Chip
         label={params.value}
@@ -92,6 +90,7 @@ export const getOrderColumns = (
     align: "center",
     headerAlign: "center",
 
+    // Rendering actions menu (⋮) with View/Delete options
     sortable: false,
     renderCell: (params: GridRenderCellParams<Order>) => (
       <OrderActionsCell

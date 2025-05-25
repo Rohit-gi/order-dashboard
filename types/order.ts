@@ -1,5 +1,6 @@
 // types/order.ts
 
+// Represents a shipping or billing address
 export interface Address {
   street: string
   city: string
@@ -8,6 +9,7 @@ export interface Address {
   country: string
 }
 
+// Represents a single line item in an order
 export interface OrderLine {
   item: string
   units: string
@@ -16,19 +18,23 @@ export interface OrderLine {
   amount: number
 }
 
+// Represents a timestamped event in order history
 export interface OrderHistory {
   timestamp: string
   event: string
 }
 
+// Coded reasons for pending approval
 export type ReasonCode =
   | 'PRICE_DISCREPANCY'
   | 'CREDIT_HOLD'
   | 'STOCK_SHORTAGE'
   | 'CUSTOMER_REQUEST'
 
+// Valid order statuses
 export type OrderStatus = 'Pending' | 'Approved' | 'Shipped' | 'Cancelled'
 
+// Main order object structure
 export interface Order {
   orderNumber: string
   customer: string
@@ -51,6 +57,7 @@ export interface Order {
   history: OrderHistory[]
 }
 
+// Summary counts used for dashboard or filter chips
 export interface OrderSummary {
   totalOrders: number
   totalRevenue: number

@@ -8,10 +8,12 @@ const filePath = path.join(process.cwd(), '/data/orders.json')
 
 export async function POST(request: Request) {
   try {
+    // Parsing the new order from the request body
     const newOrder: Order = await request.json()
 
     let orders: Order[] = []
     try {
+      // Reading and parsing existing orders
       const fileData = await fs.readFile(filePath, 'utf-8')
       orders = JSON.parse(fileData || '[]')
     } catch (readError) {

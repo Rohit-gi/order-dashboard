@@ -10,6 +10,7 @@ interface SummaryProps {
   };
 }
 
+// Displaying order summary chips for total and each status
 export default function OrderSummary({ summary }: SummaryProps) {
   return (
     <Paper elevation={0} sx={{ p: 2, mb: 2 }}>

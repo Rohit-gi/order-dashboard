@@ -12,22 +12,24 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Order } from '@/types/order';
-import { fetchOrders } from '@/lib/orders'; // 🔁 same fetcher as DataGrid
+import { fetchOrders } from '@/lib/orders'; 
 
+// This component fetches and displays the most recent orders in a table format.
 export default function RecentOrdersTable() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
-      const data = await fetchOrders(); // ✅ Live data, same as DataGrid
+      const data = await fetchOrders(); 
       setOrders(data);
       setLoading(false);
     };
     load();
   }, []);
 
-  const recentOrders = orders.slice(-5).reverse(); // newest added last → first
+  // Get last 5 orders, showing newest first
+  const recentOrders = orders.slice(-5).reverse(); 
 
   return (
     <Box
@@ -79,7 +81,7 @@ export default function RecentOrdersTable() {
                     : 'error';
 
                 return (
-                  <TableRow key={order.orderNumber}>
+                  <TableRow key={order.orderNumber} sx={{ height: 50}}>
                     <TableCell>{order.orderNumber}</TableCell>
                     <TableCell>{order.customer}</TableCell>
                     <TableCell sx={{ textAlign: 'center' }}>{order.transactionDate}</TableCell>

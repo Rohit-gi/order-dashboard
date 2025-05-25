@@ -17,6 +17,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Order, OrderLine } from "@/types/order";
 import { fetchOrders } from "@/lib/orders";
 
+// Mapping each order status to a MUI Chip color
+
 const statusColors: Record<
   Order["status"],
   "warning" | "success" | "info" | "error"
@@ -26,6 +28,8 @@ const statusColors: Record<
   Shipped: "info",
   Cancelled: "error",
 };
+
+// Defining column structure for the Orders DataGrid
 
 const getOrderColumns = (
   handleView: (id: string) => void,
@@ -45,6 +49,9 @@ const getOrderColumns = (
     field: "amount",
     headerName: "Amount ($)",
     flex: 1,
+
+    // Calculate total amount from line items
+
     valueGetter: (params: GridRenderCellParams<Order>) =>
       params.row.lines.reduce(
         (sum: number, line: OrderLine) => sum + line.amount,
@@ -138,6 +145,8 @@ export default function OrdersTable() {
     setOrders((prev) => prev.filter((order) => order.orderNumber !== id));
   };
 
+  // Filter orders based on status and search query
+
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
       const matchesStatus =
@@ -176,6 +185,8 @@ export default function OrdersTable() {
           <Tab key={status} label={status} value={status} />
         ))}
       </Tabs>
+
+      {/* Search input for customer or order number */}
 
       <TextField
         variant="outlined"

@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { Order, OrderLine, ReasonCode } from "@/types/order";
 
+// Default empty order line
 const defaultLineItem: OrderLine = {
   item: "",
   units: "",
@@ -21,6 +22,7 @@ const defaultLineItem: OrderLine = {
   amount: 0,
 };
 
+// Select field options
 const statusOptions = ["Pending", "Approved", "Shipped", "Cancelled"];
 const fromLocations = ["Warehouse A", "Warehouse B", "Warehouse C", "Warehouse D"];
 const incoterms = ["EXW", "FOB", "CIF", "DDP", "DAP"];
@@ -38,6 +40,7 @@ type Props = {
   onSubmit?: (order: Order) => void;
 };
 
+// Order form for both create and view modes
 export default function OrderForm({ readOnly = false, defaultValues = {}, onSubmit }: Props) {
   const [order, setOrder] = useState<Order>({
     ...defaultValues,
@@ -74,10 +77,12 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
     history: defaultValues.history || [],
   } as Order);
 
+    // Handling top-level field updates
   const handleChange = (field: keyof Order, value: any) => {
     setOrder((prev) => ({ ...prev, [field]: value }));
   };
 
+  // Handling address field updates
   const handleAddressChange = (
     type: "billingAddress" | "shippingAddress",
     field: string,
@@ -92,6 +97,7 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
     }));
   };
 
+  // Handling updates to a line item (e.g. quantity, price)
   const handleLineChange = (index: number, field: keyof OrderLine, value: any) => {
     const lines = [...order.lines];
     const line = { ...lines[index], [field]: value };
@@ -108,6 +114,7 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
       lines: prev.lines.filter((_, i) => i !== index),
     }));
 
+  // Handling checkbox updates for pending approval reasons
   const handleCheckboxChange = (code: ReasonCode) => {
     const selected = order.pendingApprovalReasonCode.includes(code)
       ? order.pendingApprovalReasonCode.filter((c) => c !== code)
@@ -115,6 +122,10 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
     handleChange("pendingApprovalReasonCode", selected);
   };
 
+  // Enforcing validation rules:
+  // - Required fields present
+  // - Incoterm XOR FreightTerms
+  // - At least one line item
   const isValid = (): boolean => {
     const requiredFields = [
       order.orderNumber,
@@ -131,6 +142,7 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
     return true;
   };
 
+  // Submit form if valid
   const handleSubmit = () => {
     if (!isValid()) {
       alert("Please complete all required fields, add at least one line item, and ensure either Incoterm or Freight Terms is set (not both).")
@@ -142,6 +154,9 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
   return (
     <Box component="form" display="flex" flexDirection="column" gap={3} sx={{ p: 3 }}>
       <Typography variant="h6">Basic Information</Typography>
+
+      {/* Dynamic field mapping */}
+
       <Grid container spacing={2}>
         {[{ label: "Order Number (ORD-0000)", field: "orderNumber", required: true },
           { label: "Customer", field: "customer", required: true },
@@ -170,6 +185,8 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
             </TextField>
           </Grid>
         ))}
+
+        {/* Secondary fields (dates, numbers, conditional selects) */}
 
         {[{ label: "Incoterm", field: "incoterm", options: incoterms, disabled: !!order.freightTerms },
           { label: "Freight Terms", field: "freightTerms", options: freightTerms, disabled: !!order.incoterm },
@@ -213,6 +230,8 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
           </Grid>
         ))}
 
+        {/* Address fields */}
+
         {(["street", "city", "state", "postalCode", "country"] as const).map((field) => (
           <Grid key={`billing-${field}`} size={{ xs: 12, md: 6 }}>
             <TextField
@@ -235,6 +254,8 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
         ))}
       </Grid>
 
+      {/* Approval reason checkboxes */}
+
       <Typography variant="h6">Pending Approval Reasons</Typography>
       <Box display="flex" flexWrap="wrap" gap={2}>
         {reasonCodes.map((code) => (
@@ -250,6 +271,8 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
           />
         ))}
       </Box>
+
+       {/* Order Line Items */}
 
       <Typography variant="h6">Order Lines</Typography>
       {order.lines.map((line, index) => (
@@ -317,6 +340,8 @@ export default function OrderForm({ readOnly = false, defaultValues = {}, onSubm
           </Grid>
         </Box>
       ))}
+
+      {/* Add line / Submit buttons*/}
 
       {!readOnly && (
         <>

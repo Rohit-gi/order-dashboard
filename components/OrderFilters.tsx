@@ -14,6 +14,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Order, ReasonCode } from "@/types/order";
 
+// Status tab options
 const statusTabs: (Order["status"] | "All")[] = [
   "All",
   "Pending",
@@ -22,6 +23,7 @@ const statusTabs: (Order["status"] | "All")[] = [
   "Cancelled",
 ];
 
+// Multi-select approval reason options
 const reasonCodeOptions: ReasonCode[] = [
   "PRICE_DISCREPANCY",
   "CREDIT_HOLD",
@@ -43,6 +45,7 @@ export interface OrderFiltersProps {
   onClearFilters: () => void;
 }
 
+// UI for filtering the order list by status, text, date, and reason codes
 export default function OrderFilters({
   statusFilter,
   setStatusFilter,
@@ -80,7 +83,7 @@ export default function OrderFilters({
           ))}
         </Tabs>
 
-        {/* Filters + Clear Button */}
+        {/* Filters and Clear Button */}
         <Box
           sx={{
             display: "flex",
@@ -165,7 +168,7 @@ export default function OrderFilters({
             </Grid>
           </Grid>
 
-          {/* Clear Filters Button */}
+          {/* Applying Clear Filters Button */}
           <Box sx={{ whiteSpace: "nowrap" }}>
             <Button
               variant="outlined"

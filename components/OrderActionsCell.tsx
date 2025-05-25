@@ -11,6 +11,7 @@ type Props = {
   onDelete: (id: string) => void;
 };
 
+// Action menu for each order row: View or Delete
 export function OrderActionsCell({ row, onView, onDelete }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -21,6 +22,7 @@ export function OrderActionsCell({ row, onView, onDelete }: Props) {
 
   const handleClose = () => setAnchorEl(null);
 
+  // Handle delete with API call and local state update
   const handleDelete = async () => {
     try {
       handleClose();

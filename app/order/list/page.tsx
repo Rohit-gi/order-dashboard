@@ -27,6 +27,7 @@ export default function OrderListPage() {
 
   const router = useRouter();
 
+  // Load order data on initial render
   useEffect(() => {
     const load = async () => {
       const data = await fetchOrders();
@@ -36,10 +37,12 @@ export default function OrderListPage() {
     load();
   }, []);
 
+  // View and delete handlers for order row actions
   const handleView = (id: string) => router.push(`/order/${id}`);
   const handleDelete = (id: string) =>
     setOrders((prev) => prev.filter((o) => o.orderNumber !== id));
 
+  // Reset all filters
   const handleClearFilters = () => {
     setSearchQuery("");
     setStatusFilter("All");
@@ -48,6 +51,7 @@ export default function OrderListPage() {
     setEndDate("");
   };
 
+  // Filter and sort orders based on user input
   const filteredOrders = useMemo(() => {
     return orders
       .filter((o) => !!o.orderNumber)
@@ -80,11 +84,13 @@ export default function OrderListPage() {
       );
   }, [orders, statusFilter, searchQuery, startDate, endDate, reasonCodes]);
 
+  // Paginate filtered orders
   const pagedOrders = useMemo(() => {
     const start = paginationModel.page * paginationModel.pageSize;
     return filteredOrders.slice(start, start + paginationModel.pageSize);
   }, [filteredOrders, paginationModel]);
 
+  // Compute summary counts for chips
   const summary = useMemo(
     () => ({
       total: filteredOrders.length,
@@ -110,8 +116,10 @@ export default function OrderListPage() {
         Orders
       </Typography>
 
+      {/* Summary chips: total, status counts */}
       <OrderSummary summary={summary} />
 
+      {/* Filters: status, search, date range, reason codes */}
       <OrderFilters
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
@@ -126,6 +134,7 @@ export default function OrderListPage() {
         onClearFilters={handleClearFilters}
       />
 
+      {/* Orders table with pagination and action column*/}  
       <Box
         sx={{
           flexGrow: 1,

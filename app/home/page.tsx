@@ -19,12 +19,14 @@ import RecentOrdersTable from "@/components/RecentOrdersTable";
 export default function HomePage() {
   const [orders, setOrders] = useState<Order[] | null>(null);
 
+  // Fetching orders on mount
   useEffect(() => {
     fetchOrders().then(setOrders);
   }, []);
 
   const loading = orders === null;
 
+  // Calculating total orders and revenue
   const totalOrders = orders?.length ?? 0;
   const totalRevenue =
     orders?.reduce(
@@ -33,6 +35,7 @@ export default function HomePage() {
       0
     ) ?? 0;
 
+  // Summary for cards
   const summary = {
     totalOrders,
     totalRevenue,
@@ -41,6 +44,7 @@ export default function HomePage() {
     Cancelled: orders?.filter((o) => o.status === "Cancelled").length ?? 0,
   };
 
+  // Chart data for the last 30 days
   const chartData = orders
     ? Array.from({ length: 30 }).map((_, i) => {
         const date = format(subDays(new Date(), 29 - i), "yyyy-MM-dd");

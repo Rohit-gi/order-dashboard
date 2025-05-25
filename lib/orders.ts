@@ -1,7 +1,7 @@
 import orders from '@/data/orders.json'
 import { Order, OrderStatus, OrderSummary } from '@/types/order'
 
-// Simulate async order fetch
+// Simulating async order fetch
 
 export async function fetchOrders(): Promise<Order[]> {
   return new Promise((resolve) => {
