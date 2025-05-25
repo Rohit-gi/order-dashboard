@@ -4,9 +4,9 @@ import {
   Card,
   CardContent,
   Typography,
-  Grid,
   Box,
   Link,
+  Grid,
 } from '@mui/material';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -57,11 +57,11 @@ const SummaryCards = ({ summary }: Props) => {
   return (
     <Grid container spacing={2}>
       {cardItems.map(({ label, value, icon, linkText }) => (
-        <Grid item xs={12} sm={6} md={3} key={label}>
+        <Grid key={label} size={{ xs: 12, sm: 6, md: 3 }}>
           <Card
             elevation={0}
             sx={{
-              boxShadow: '2',
+              boxShadow: 2,
               borderRadius: 2,
               color: '#fff',
               height: 160,
@@ -73,7 +73,7 @@ const SummaryCards = ({ summary }: Props) => {
             }}
           >
             <CardContent sx={{ flex: '1 1 auto' }}>
-              <Typography variant="h6" color="#fff">
+              <Typography variant="h6" sx={{ color: '#fff' }}>
                 {label}
               </Typography>
               <Typography variant="h4" fontWeight="bold" color="primary">

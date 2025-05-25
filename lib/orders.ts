@@ -1,4 +1,4 @@
-import orders from '@/public/data/orders.json'
+import orders from '@/data/orders.json'
 import { Order, OrderStatus, OrderSummary } from '@/types/order'
 
 // Simulate async order fetch

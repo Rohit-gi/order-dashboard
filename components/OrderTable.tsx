@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Chip,
@@ -10,64 +10,69 @@ import {
   Tabs,
   TextField,
   Typography,
-} from '@mui/material';
-import {
-  DataGrid,
-  GridColDef,
-  GridRenderCellParams,
-} from '@mui/x-data-grid';
-import SearchIcon from '@mui/icons-material/Search';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Order, OrderLine } from '@/types/order';
-import { fetchOrders } from '@/lib/orders';
+} from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import SearchIcon from "@mui/icons-material/Search";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Order, OrderLine } from "@/types/order";
+import { fetchOrders } from "@/lib/orders";
 
-const statusColors: Record<Order['status'], 'warning' | 'success' | 'info' | 'error'> = {
-  Pending: 'warning',
-  Approved: 'success',
-  Shipped: 'info',
-  Cancelled: 'error',
+const statusColors: Record<
+  Order["status"],
+  "warning" | "success" | "info" | "error"
+> = {
+  Pending: "warning",
+  Approved: "success",
+  Shipped: "info",
+  Cancelled: "error",
 };
 
 const getOrderColumns = (
   handleView: (id: string) => void,
   handleDelete: (id: string) => void
 ): GridColDef<Order>[] => [
-  { field: 'orderNumber', headerName: 'Order #', flex: 1 },
-  { field: 'customer', headerName: 'Customer', flex: 1 },
-  { field: 'transactionDate', headerName: 'Created Date', flex: 1 },
+  { field: "orderNumber", headerName: "Order #", flex: 1 },
+  { field: "customer", headerName: "Customer", flex: 1 },
+  { field: "transactionDate", headerName: "Created Date", flex: 1 },
   {
-    field: 'dueDate',
-    headerName: 'Due Date',
-    flex: 1,
-    valueGetter: (params: GridRenderCellParams<Order>) => params.row.latePickupDate,
-  },
-  {
-    field: 'amount',
-    headerName: 'Amount ($)',
+    field: "dueDate",
+    headerName: "Due Date",
     flex: 1,
     valueGetter: (params: GridRenderCellParams<Order>) =>
-      params.row.lines.reduce((sum: number, line: OrderLine) => sum + line.amount, 0),
-    valueFormatter: (params: GridRenderCellParams<Order>) =>
-      typeof params.value === 'number' ? `$${params.value.toFixed(2)}` : '$0.00',
+      params.row.latePickupDate,
   },
   {
-    field: 'status',
-    headerName: 'Status',
+    field: "amount",
+    headerName: "Amount ($)",
     flex: 1,
-    type: 'singleSelect',
-    valueOptions: ['Pending', 'Approved', 'Shipped', 'Cancelled'],
+    valueGetter: (params: GridRenderCellParams<Order>) =>
+      params.row.lines.reduce(
+        (sum: number, line: OrderLine) => sum + line.amount,
+        0
+      ),
+    valueFormatter: (params: GridRenderCellParams<Order>) =>
+      typeof params.value === "number"
+        ? `$${params.value.toFixed(2)}`
+        : "$0.00",
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1,
+    type: "singleSelect",
+    valueOptions: ["Pending", "Approved", "Shipped", "Cancelled"],
     renderCell: (params: GridRenderCellParams<Order>) => (
       <Chip
         label={params.value}
-        color={statusColors[params.value as Order['status']]}
+        color={statusColors[params.value as Order["status"]]}
         size="small"
       />
     ),
   },
   {
-    field: 'actions',
-    headerName: '',
-    type: 'actions',
+    field: "actions",
+    headerName: "",
+    type: "actions",
     flex: 0.5,
     renderCell: (params: GridRenderCellParams<Order>) => {
       const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -111,8 +116,10 @@ const getOrderColumns = (
 export default function OrdersTable() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<Order['status'] | 'All'>('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<Order["status"] | "All">(
+    "All"
+  );
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const load = async () => {
@@ -124,7 +131,7 @@ export default function OrdersTable() {
   }, []);
 
   const handleView = (id: string) => {
-    console.log('View order:', id);
+    console.log("View order:", id);
   };
 
   const handleDelete = (id: string) => {
@@ -133,7 +140,8 @@ export default function OrdersTable() {
 
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
-      const matchesStatus = statusFilter === 'All' || order.status === statusFilter;
+      const matchesStatus =
+        statusFilter === "All" || order.status === statusFilter;
       const matchesSearch =
         order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
         order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase());
@@ -141,16 +149,18 @@ export default function OrdersTable() {
     });
   }, [orders, statusFilter, searchQuery]);
 
-  const statusTabs: (Order['status'] | 'All')[] = [
-    'All',
-    'Pending',
-    'Approved',
-    'Shipped',
-    'Cancelled',
+  const statusTabs: (Order["status"] | "All")[] = [
+    "All",
+    "Pending",
+    "Approved",
+    "Shipped",
+    "Cancelled",
   ];
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', p: 2 }}>
+    <Box
+      sx={{ display: "flex", flexDirection: "column", height: "100vh", p: 2 }}
+    >
       <Typography variant="h6" gutterBottom>
         Orders
       </Typography>
@@ -175,16 +185,23 @@ export default function OrdersTable() {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         sx={{ mb: 2 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          },
         }}
       />
 
-      <Box sx={{ flexGrow: 1, minHeight: 0 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          minHeight: 0,
+        }}
+      >
         <DataGrid
           rows={filteredOrders}
           columns={getOrderColumns(handleView, handleDelete)}

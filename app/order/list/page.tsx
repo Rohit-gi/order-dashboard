@@ -13,7 +13,9 @@ import OrderSummary from "@/components/OrderSummary";
 export default function OrderListPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<Order["status"] | "All">("All");
+  const [statusFilter, setStatusFilter] = useState<Order["status"] | "All">(
+    "All"
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [reasonCodes, setReasonCodes] = useState<ReasonCode[]>([]);
   const [startDate, setStartDate] = useState<string>("");
@@ -50,7 +52,8 @@ export default function OrderListPage() {
     return orders
       .filter((o) => !!o.orderNumber)
       .filter((o) => {
-        const matchesStatus = statusFilter === "All" || o.status === statusFilter;
+        const matchesStatus =
+          statusFilter === "All" || o.status === statusFilter;
         const matchesSearch =
           o.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
           o.orderNumber.toLowerCase().includes(searchQuery.toLowerCase());
@@ -59,9 +62,22 @@ export default function OrderListPage() {
         const inEndRange = !endDate || orderDate <= endDate;
         const matchesReason =
           reasonCodes.length === 0 ||
-          o.pendingApprovalReasonCode?.some((code) => reasonCodes.includes(code));
-        return matchesStatus && matchesSearch && inStartRange && inEndRange && matchesReason;
-      });
+          o.pendingApprovalReasonCode?.some((code) =>
+            reasonCodes.includes(code)
+          );
+        return (
+          matchesStatus &&
+          matchesSearch &&
+          inStartRange &&
+          inEndRange &&
+          matchesReason
+        );
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.transactionDate).getTime() -
+          new Date(a.transactionDate).getTime()
+      );
   }, [orders, statusFilter, searchQuery, startDate, endDate, reasonCodes]);
 
   const pagedOrders = useMemo(() => {
@@ -69,13 +85,16 @@ export default function OrderListPage() {
     return filteredOrders.slice(start, start + paginationModel.pageSize);
   }, [filteredOrders, paginationModel]);
 
-  const summary = useMemo(() => ({
-    total: filteredOrders.length,
-    Pending: filteredOrders.filter((o) => o.status === "Pending").length,
-    Approved: filteredOrders.filter((o) => o.status === "Approved").length,
-    Shipped: filteredOrders.filter((o) => o.status === "Shipped").length,
-    Cancelled: filteredOrders.filter((o) => o.status === "Cancelled").length,
-  }), [filteredOrders]);
+  const summary = useMemo(
+    () => ({
+      total: filteredOrders.length,
+      Pending: filteredOrders.filter((o) => o.status === "Pending").length,
+      Approved: filteredOrders.filter((o) => o.status === "Approved").length,
+      Shipped: filteredOrders.filter((o) => o.status === "Shipped").length,
+      Cancelled: filteredOrders.filter((o) => o.status === "Cancelled").length,
+    }),
+    [filteredOrders]
+  );
 
   return (
     <Box
@@ -91,6 +110,8 @@ export default function OrderListPage() {
         Orders
       </Typography>
 
+      <OrderSummary summary={summary} />
+
       <OrderFilters
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
@@ -104,8 +125,6 @@ export default function OrderListPage() {
         setReasonCodes={setReasonCodes}
         onClearFilters={handleClearFilters}
       />
-
-      <OrderSummary summary={summary} />
 
       <Box
         sx={{
@@ -122,7 +141,7 @@ export default function OrderListPage() {
         <Box sx={{ minWidth: 600 }}>
           <DataGrid<Order>
             sx={{
-              '--DataGrid-containerBackground': 'background.paper',
+              "--DataGrid-containerBackground": "background.paper",
               bgcolor: "background.paper",
               "& .MuiDataGrid-toolbarContainer": {
                 bgcolor: "background.paper",

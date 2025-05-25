@@ -21,6 +21,24 @@ export function OrderActionsCell({ row, onView, onDelete }: Props) {
 
   const handleClose = () => setAnchorEl(null);
 
+  const handleDelete = async () => {
+    try {
+      handleClose();
+      const res = await fetch(`/api/orders/${row.orderNumber}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        console.error('Failed to delete order:', await res.text());
+        return;
+      }
+
+      onDelete(row.orderNumber);
+    } catch (err) {
+      console.error('Error deleting order:', err);
+    }
+  };
+
   return (
     <>
       <IconButton onClick={handleClick}>
@@ -35,14 +53,7 @@ export function OrderActionsCell({ row, onView, onDelete }: Props) {
         >
           View
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleClose();
-            onDelete(row.orderNumber);
-          }}
-        >
-          Delete
-        </MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
     </>
   );

@@ -64,7 +64,7 @@ export default function HomePage() {
           <SummaryCards summary={summary} />
 
           <Grid container spacing={2} mt={3}>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Card
                 elevation={0}
                 sx={{
@@ -150,7 +150,7 @@ export default function HomePage() {
                       color: "success.main",
                     },
                   ].map(({ label, value, change, color }) => (
-                    <Grid item xs={4} key={label}>
+                    <Grid key={label} size={{ xs: 4 }}>
                       <Typography variant="caption" color="text.secondary">
                         {label}
                       </Typography>
@@ -176,13 +176,11 @@ export default function HomePage() {
               </Card>
             </Grid>
 
-            {/* Orders Chart - 2/3 width */}
-            <Grid item xs={12} md={8}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <OrdersChart data={chartData} />
             </Grid>
           </Grid>
 
-          {/* Recent Orders Table */}
           <Box mt={4}>
             <RecentOrdersTable orders={orders.slice(0, 5)} />
           </Box>
