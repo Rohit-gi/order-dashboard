@@ -13,31 +13,6 @@ A modern internal dashboard to manage orders.
 - Recharts
 - JSON as local API data source
 
-## Project Structure
-
-src/
-├── app/
-│   ├── layout.tsx            # Shared layout with Sidebar & Header
-│   ├── page.tsx              # Redirect to /home
-│   ├── home/                 # Home page with summary cards
-│   ├── order/
-│   │   ├── list/             # Order List with filters
-│   │   ├── create/           # Order Create form
-│   │   ├── [orderNumber]/    # View Order details (read-only)
-├── components/
-│   ├── Sidebar.tsx           # Collapsible nav menu
-│   ├── UserModal.tsx         # Profile modal on user icon click
-│   ├── OrderForm.tsx         # Shared form logic for Create/View
-│   ├── OrderTable.tsx        # Modular DataGrid
-│   ├── OrderFilters.tsx      # Filters for list page
-│   ├── OrderSummary.tsx      # Cards showing totals
-│   ├── OrderHistory.tsx      # Timeline/history view
-├── lib/
-│   ├── orders.ts             # Fetch + manipulate orders from JSON
-├── data/
-│   └── orders.json           # Simulated API data source
-
-
 ## Features
 
 - Collapsible sidebar + top user modal 
