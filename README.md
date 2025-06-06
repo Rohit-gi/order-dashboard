@@ -24,7 +24,7 @@ A modern internal dashboard to manage orders.
 - Additional filters (date, codes)     
 - Fully responsive & accessible UI   
 
-## Bonus Tasks
+## Modularization
 
 Modularization Approach: I combined the Create and View Order pages into a single dynamic route using a shared OrderForm component.
 The form switches between editable and read-only modes using readOnly, defaultValues, and an optional onSubmit prop.
